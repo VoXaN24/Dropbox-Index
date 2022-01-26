@@ -13,6 +13,8 @@ import { useRouter } from "next/router";
 import { IconButton } from "./Icons";
 import ky from "ky";
 import prettyBytes from "pretty-bytes";
+var markdown = require("markdown-js");
+var fs = require("fs");
 
 interface ListProps {
   entries: (files.FileMetadataReference | files.FolderMetadataReference)[];
@@ -141,6 +143,12 @@ export const List = (props: ListProps) => {
                 >
                   <DownloadIcon height={18} />
                 </IconButton>
+                
+              )}
+            </div>
+            <div>
+              {file[".tag"] === "file" && file[".name"] == "readme.md" && (
+               
               )}
             </div>
           </div>
