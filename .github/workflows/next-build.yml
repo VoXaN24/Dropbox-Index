@@ -1,24 +1,38 @@
-name: NextJS Build Test
+name: CI
 
 on:
   push:
-    branches-ignore: [gh-pages]
-    paths-ignore: ["*.md", "*.yml", "*.yaml"]
-  pull_request:
-    branches-ignore: [gh-pages]
-    paths-ignore: ["*.md", "*.yml", "*.yaml"]
+    branches-ignore: ['gh-pages']
+    tags: ['*']
+  workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '#skip-lint')"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install
+      - name: Run Linter
+        run: yarn run lint
+
   build:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '#skip-build')"
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-      - uses: c-hive/gha-yarn-cache@v2
-      - name: Install node_modules
+          node-version: "16"
+          cache: yarn
+      - name: Install dependencies
         run: yarn install
-      - name: Build NextJS
-        run: yarn build
+      - name: Build
+        run: yarn run build
